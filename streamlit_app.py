@@ -1,67 +1,37 @@
 import streamlit as st
-from datetime import datetime, timedelta
 import time
+from datetime import datetime, timedelta
 
-class HydrationApp:
-    def __init__(self):
-        self.intervalo = 0
-        self.agua_consumida = 0
-        self.recordatorio_activado = False
-        self.tiempo_siguiente_recordatorio = 0
+# Inicializar variables
+hydration_interval = 3  # intervalo de hidratación en segundos
+start_time = datetime.now()
+water_count = 0
 
-    def mostrar_recordatorio(self):
-        st.success("¡Es hora de tomar agua!")
+# Configuración de la aplicación
+st.title("Recordatorio de Hidratación")
 
-    def registrar_agua(self):
-        self.agua_consumida += 250  # Puedes ajustar la cantidad según tus necesidades
+# Configuración del intervalo de hidratación
+hydration_interval = st.slider("Selecciona el intervalo de hidratación (segundos)", 3, 10, 3)
 
-    def run(self):
-        st.title("Recordatorio de Hidratación")
+# Función para mostrar la notificación
+def show_notification(message):
+    st.info(message)
 
-        # Configurar el recordatorio
-        self.intervalo = st.slider("Intervalo de recordatorio (horas):", 0.5, 3.0, 1.0)
+# Bucle principal de la aplicación
+while True:
+    current_time = datetime.now()
+    elapsed_time = current_time - start_time
 
-        # Botón para iniciar el recordatorio
-        if st.button("Iniciar Recordatorio"):
-            st.success("Recordatorio iniciado. Puedes cerrar esta pestaña y revisar aquí.")
-            self.recordatorio_activado = True
-            self.tiempo_siguiente_recordatorio = time.time() + self.intervalo * 3600
+    # Verificar si ha pasado el tiempo de hidratación
+    if elapsed_time.seconds % hydration_interval == 0:
+        show_notification("¡Es hora de hidratarse!")
 
-        # Mostrar el contador regresivo en formato HH:MM:SS
-        tiempo_restante = int(max(0, self.tiempo_siguiente_recordatorio - time.time()))
-        tiempo_restante_str = "{:02}:{:02}:{:02}".format(
-            tiempo_restante // 3600, (tiempo_restante % 3600) // 60, tiempo_restante % 60)
-        contador_text = st.empty()
-        contador_text.markdown("Tiempo restante para el próximo recordatorio: {}".format(tiempo_restante_str), unsafe_allow_html=True)
+    # Mostrar contador de agua
+    st.text(f"Vasos de agua consumidos hoy: {water_count}")
 
-        # Actualizar dinámicamente la página con JavaScript
-        st.markdown("""
-        <script>
-        function refresh() {
-            setTimeout(function(){
-                window.location.reload();
-            }, 1000);
-        }
-        refresh();
-        </script>
-        """, unsafe_allow_html=True)
+    # Botón para registrar la cantidad de agua consumida
+    if st.button("Registrar vaso de agua"):
+        water_count += 1
 
-        # Mostrar el mensaje de recordatorio cuando llegue el momento
-        if tiempo_restante == 0:
-            self.mostrar_recordatorio()
-            self.tiempo_siguiente_recordatorio = time.time() + self.intervalo * 3600
-
-        # Botón para detener el recordatorio
-        if st.button("Detener Recordatorio"):
-            self.recordatorio_activado = False
-            st.success("Recordatorio detenido.")
-
-        # Botón para registrar el consumo de agua
-        if st.button("Registrar Agua"):
-            self.registrar_agua()
-            st.success("Agua registrada. Total consumido: {} ml".format(self.agua_consumida))
-
-
-if __name__ == "__main__":
-    app = HydrationApp()
-    app.run()
+    # Actualizar la página cada segundo
+    time.sleep(1)
