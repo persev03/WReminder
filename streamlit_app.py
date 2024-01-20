@@ -27,21 +27,29 @@ class HydrationApp:
             self.recordatorio_activado = True
             self.tiempo_siguiente_recordatorio = time.time() + self.intervalo * 3600
 
-        # Expander para mostrar el contador regresivo
-        with st.expander("Contador Regresivo"):
-            # Actualizar la interfaz
-            if self.recordatorio_activado:
-                tiempo_restante = int(max(0, self.tiempo_siguiente_recordatorio - time.time()))
+        # Mostrar el contador regresivo en formato HH:MM:SS
+        tiempo_restante = int(max(0, self.tiempo_siguiente_recordatorio - time.time()))
+        tiempo_restante_str = "{:02}:{:02}:{:02}".format(
+            tiempo_restante // 3600, (tiempo_restante % 3600) // 60, tiempo_restante % 60)
+        contador_text = st.empty()
+        contador_text.markdown("Tiempo restante para el próximo recordatorio: {}".format(tiempo_restante_str), unsafe_allow_html=True)
 
-                # Mostrar el contador regresivo en formato HH:MM:SS
-                tiempo_restante_str = "{:02}:{:02}:{:02}".format(
-                    tiempo_restante // 3600, (tiempo_restante % 3600) // 60, tiempo_restante % 60)
-                st.write("Tiempo restante para el próximo recordatorio:", tiempo_restante_str)
+        # Actualizar dinámicamente la página con JavaScript
+        st.markdown("""
+        <script>
+        function refresh() {
+            setTimeout(function(){
+                window.location.reload();
+            }, 1000);
+        }
+        refresh();
+        </script>
+        """, unsafe_allow_html=True)
 
-                # Mostrar el mensaje de recordatorio cuando llegue el momento
-                if tiempo_restante == 0:
-                    self.mostrar_recordatorio()
-                    self.tiempo_siguiente_recordatorio = time.time() + self.intervalo * 3600
+        # Mostrar el mensaje de recordatorio cuando llegue el momento
+        if tiempo_restante == 0:
+            self.mostrar_recordatorio()
+            self.tiempo_siguiente_recordatorio = time.time() + self.intervalo * 3600
 
         # Botón para detener el recordatorio
         if st.button("Detener Recordatorio"):
