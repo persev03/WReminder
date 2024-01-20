@@ -1,6 +1,6 @@
 import streamlit as st
-from plyer import notification
 from datetime import datetime, timedelta
+import time
 
 class HydrationApp:
     def __init__(self):
@@ -8,11 +8,7 @@ class HydrationApp:
         self.agua_consumida = 0
 
     def mostrar_recordatorio(self):
-        notification.notify(
-            title="¡Hidratación!",
-            message="¡Es hora de tomar agua!",
-            timeout=10
-        )
+        st.success("¡Es hora de tomar agua!")
 
     def registrar_agua(self):
         self.agua_consumida += 250  # Puedes ajustar la cantidad según tus necesidades
@@ -25,19 +21,14 @@ class HydrationApp:
 
         # Botón para iniciar el recordatorio
         if st.button("Iniciar Recordatorio"):
-            st.success("Recordatorio iniciado. Puedes cerrar esta pestaña y recibirás notificaciones.")
+            st.success("Recordatorio iniciado. Puedes cerrar esta pestaña y revisar aquí.")
 
             # Iniciar el bucle de recordatorio
             while True:
                 self.mostrar_recordatorio()
-                st.empty()  # Esto evita que la aplicación se bloquee debido al bucle infinito
+                time.sleep(self.intervalo * 3600)  # Convertir el intervalo a segundos
 
         # Botón para registrar el consumo de agua
         if st.button("Registrar Agua"):
             self.registrar_agua()
-            st.success("Agua registrada. Total consumido: {} ml".format(self.agua_consumida))
-
-
-if __name__ == "__main__":
-    app = HydrationApp()
-    app.run()
+            st.success("Agua registrada. Total consumido: {} ml".f
