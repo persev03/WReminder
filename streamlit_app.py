@@ -13,9 +13,6 @@ st.title("Recordatorio de Hidratación")
 # Configuración del intervalo de hidratación
 hydration_interval = st.slider("Selecciona el intervalo de hidratación (segundos)", 3, 10, 3)
 
-# Crear el botón fuera del bucle
-register_button = st.button("Registrar vaso de agua")
-
 # Bucle principal de la aplicación
 while True:
     current_time = datetime.now()
@@ -27,6 +24,9 @@ while True:
 
     # Mostrar contador de agua
     st.text(f"Vasos de agua consumidos hoy: {water_count}")
+
+    # Crear un botón único en cada iteración
+    register_button = st.button(f"Registrar vaso de agua ({elapsed_time.seconds})")
 
     # Verificar si se ha presionado el botón
     if register_button:
