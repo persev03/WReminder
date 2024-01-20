@@ -1,5 +1,4 @@
 import streamlit as st
-import threading
 from datetime import datetime, timedelta
 import time
 
@@ -7,29 +6,14 @@ class HydrationApp:
     def __init__(self):
         self.intervalo = 0
         self.agua_consumida = 0
-        self.tiempo_restante = 0
-        self.contador_text = st.empty()
         self.recordatorio_activado = False
+        self.tiempo_siguiente_recordatorio = 0
 
     def mostrar_recordatorio(self):
         st.success("¡Es hora de tomar agua!")
 
     def registrar_agua(self):
         self.agua_consumida += 250  # Puedes ajustar la cantidad según tus necesidades
-
-    def bucle_recordatorio(self):
-        while self.recordatorio_activado:
-            tiempo_actual = time.time()
-            self.tiempo_restante = max(0, int(tiempo_siguiente_recordatorio - tiempo_actual))
-
-            if self.tiempo_restante == 0:
-                self.mostrar_recordatorio()
-                tiempo_siguiente_recordatorio = tiempo_actual + self.intervalo * 3600
-
-            # Actualizar la interfaz
-            self.contador_text.text("Tiempo restante para el próximo recordatorio: {:02}:{:02}:{:02}".format(
-                self.tiempo_restante // 3600, (self.tiempo_restante % 3600) // 60, self.tiempo_restante % 60))
-            time.sleep(1)
 
     def run(self):
         st.title("Recordatorio de Hidratación")
@@ -41,13 +25,18 @@ class HydrationApp:
         if st.button("Iniciar Recordatorio"):
             st.success("Recordatorio iniciado. Puedes cerrar esta pestaña y revisar aquí.")
             self.recordatorio_activado = True
+            self.tiempo_siguiente_recordatorio = time.time() + self.intervalo * 3600
 
-            tiempo_inicial = time.time()
-            tiempo_siguiente_recordatorio = tiempo_inicial + self.intervalo * 3600
+        # Contador regresivo hasta el próximo recordatorio
+        if self.recordatorio_activado:
+            tiempo_restante = int(max(0, self.tiempo_siguiente_recordatorio - time.time()))
+            st.text("Tiempo restante para el próximo recordatorio: {:02}:{:02}:{:02}".format(
+                tiempo_restante // 3600, (tiempo_restante % 3600) // 60, tiempo_restante % 60))
 
-            # Iniciar el bucle de recordatorio en un hilo separado
-            thread_recordatorio = threading.Thread(target=self.bucle_recordatorio)
-            thread_recordatorio.start()
+            # Actualizar la interfaz
+            if tiempo_restante == 0:
+                self.mostrar_recordatorio()
+                self.tiempo_siguiente_recordatorio = time.time() + self.intervalo * 3600
 
         # Botón para detener el recordatorio
         if st.button("Detener Recordatorio"):
