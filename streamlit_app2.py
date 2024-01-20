@@ -28,7 +28,7 @@ st.title("Recordatorios de hidratación")
 # Intervalo de recordatorios
 intervalo_recordatorios = st.slider("Intervalo de recordatorios (minutos)", 1, 60, 60)
 
-# Botón para configurar los recordatorios (fuera de la función set_reminders)
+# Botón para configurar los recordatorios
 if st.button("Configurar recordatorios"):
     # Actualizar el intervalo de recordatorios
     reminder_interval = intervalo_recordatorios
