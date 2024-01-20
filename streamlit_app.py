@@ -1,44 +1,39 @@
 import streamlit as st
-import datetime
+from datetime import datetime, timedelta
 import time
 
-# Inicializamos el contador de agua
-contador_agua = 0
+class HydrationApp:
+    def __init__(self):
+        self.intervalo = 0
+        self.agua_consumida = 0
 
-# Función para mostrar la alerta de hidratación
-def mostrar_alerta():
-    st.warning("¡Es hora de hidratarse!")
+    def mostrar_recordatorio(self):
+        st.success("¡Es hora de tomar agua!")
 
-# Función principal de la aplicación
-def main():
-    global contador_agua
+    def registrar_agua(self):
+        self.agua_consumida += 250  # Puedes ajustar la cantidad según tus necesidades
 
-    st.title("Recordatorio de Hidratación")
+    def run(self):
+        st.title("Recordatorio de Hidratación")
 
-    # Configuración de recordatorio
-    hora_recordatorio = st.time_input("Selecciona la hora del recordatorio:", datetime.time(8, 0))
-    recordatorio_intervalo = st.slider("Intervalo de recordatorio (minutos):", 10, 120, 30)
+        # Configurar el recordatorio
+        self.intervalo = st.slider("Intervalo de recordatorio (horas):", 0.5, 3.0, 1.0)
 
-    # Configuración del contador de agua
-    st.header("Contador de Agua")
-    contador_agua_hoy = st.empty()
+        # Botón para iniciar el recordatorio
+        if st.button("Iniciar Recordatorio"):
+            st.success("Recordatorio iniciado. Puedes cerrar esta pestaña y revisar aquí.")
 
-    # Verificar si es hora de mostrar la alerta
-    while True:
-        now = datetime.datetime.now().time()
-        if now >= hora_recordatorio:
-            mostrar_alerta()
-            time.sleep(60 * recordatorio_intervalo)  # Esperar hasta el próximo recordatorio
-        else:
-            time.sleep(60)  # Esperar un minuto antes de verificar nuevamente
+            # Iniciar el bucle de recordatorio
+            while True:
+                self.mostrar_recordatorio()
+                time.sleep(self.intervalo * 3600)  # Convertir el intervalo a segundos
 
-        # Actualizar el contador de agua (simulado con un botón)
-        if st.button("Registrar vaso de agua"):
-            contador_agua += 1
+        # Botón para registrar el consumo de agua
+        if st.button("Registrar Agua"):
+            self.registrar_agua()
+            st.success("Agua registrada. Total consumido: {} ml".format(self.agua_consumida))
 
-        # Mostrar el contador actualizado
-        contador_agua_hoy.text(f"Vasos de agua hoy: {contador_agua}")
 
-# Ejecutar la aplicación
 if __name__ == "__main__":
-    main()
+    app = HydrationApp()
+    app.run()
