@@ -3,7 +3,7 @@ import time
 from datetime import datetime, timedelta
 
 # Inicializar variables
-hydration_interval = 3  # intervalo de hidratación en segundos
+hydration_interval = 5  # intervalo de hidratación en segundos
 start_time = datetime.now()
 water_count = 0
 
