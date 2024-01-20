@@ -31,4 +31,9 @@ class HydrationApp:
         # Botón para registrar el consumo de agua
         if st.button("Registrar Agua"):
             self.registrar_agua()
-            st.success("Agua registrada. T
+            st.success("Agua registrada. Total consumido: {} ml".format(self.agua_consumida))
+
+
+if __name__ == "__main__":
+    app = HydrationApp()
+    app.run()
