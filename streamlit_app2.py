@@ -8,7 +8,7 @@ current_time = datetime.datetime.now()
 reminder_interval = 60  # Minutos
 water_count = 0
 
-# Función para mostrar la alerta (definida antes de usarla)
+# Función para mostrar la alerta
 def show_reminder():
     global water_count
 
@@ -28,23 +28,24 @@ st.title("Recordatorios de hidratación")
 # Intervalo de recordatorios
 intervalo_recordatorios = st.slider("Intervalo de recordatorios (minutos)", 1, 60, 60)
 
-# Botón para configurar los recordatorios
+# Botón para configurar los recordatorios (fuera de la función set_reminders)
 if st.button("Configurar recordatorios"):
     # Actualizar el intervalo de recordatorios
     reminder_interval = intervalo_recordatorios
 
     # Configurar los recordatorios
-    def set_reminders():
-        global current_time
-        global reminder_interval
-
-        # Obtener la hora del siguiente recordatorio
-        next_reminder = current_time + datetime.timedelta(minutes=reminder_interval)
-
-        # Iniciar un hilo para mostrar la alerta
-        threading.Timer(next_reminder - current_time, show_reminder).start()
-
     set_reminders()
+
+# Definición de la función set_reminders
+def set_reminders():
+    global current_time
+    global reminder_interval
+
+    # Obtener la hora del siguiente recordatorio
+    next_reminder = current_time + datetime.timedelta(minutes=reminder_interval)
+
+    # Iniciar un hilo para mostrar la alerta
+    threading.Timer(next_reminder - current_time, show_reminder).start()
 
 # Contador de agua
 st.write("Vasos de agua consumidos hoy:", water_count)
