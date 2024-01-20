@@ -13,9 +13,8 @@ st.title("Recordatorio de Hidratación")
 # Configuración del intervalo de hidratación
 hydration_interval = st.slider("Selecciona el intervalo de hidratación (segundos)", 3, 10, 3)
 
-# Función para mostrar la notificación
-def show_notification(message):
-    st.info(message)
+# Crear el botón fuera del bucle
+register_button = st.button("Registrar vaso de agua")
 
 # Bucle principal de la aplicación
 while True:
@@ -24,13 +23,13 @@ while True:
 
     # Verificar si ha pasado el tiempo de hidratación
     if elapsed_time.seconds % hydration_interval == 0:
-        show_notification("¡Es hora de hidratarse!")
+        st.info("¡Es hora de hidratarse!")
 
     # Mostrar contador de agua
     st.text(f"Vasos de agua consumidos hoy: {water_count}")
 
-    # Botón para registrar la cantidad de agua consumida
-    if st.button("Registrar vaso de agua"):
+    # Verificar si se ha presionado el botón
+    if register_button:
         water_count += 1
 
     # Actualizar la página cada segundo
