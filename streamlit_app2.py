@@ -8,6 +8,19 @@ current_time = datetime.datetime.now()
 reminder_interval = 60  # Minutos
 water_count = 0
 
+# Función para mostrar la alerta (definida antes de usarla)
+def show_reminder():
+    global water_count
+
+    # Mostrar la alerta
+    st.write(f"¡Es hora de hidratarse! Llevas {water_count} vasos de agua consumidos hoy.")
+
+    # Actualizar el contador de agua
+    water_count += 1
+
+    # Configurar el siguiente recordatorio
+    set_reminders()
+
 # Código para la interfaz de usuario de Streamlit
 
 st.title("Recordatorios de hidratación")
@@ -42,17 +55,4 @@ if st.button("Beber un vaso de agua"):
     water_count += 1
 
     # Configurar los recordatorios
-    set_reminders()
-
-# Función para mostrar la alerta
-def show_reminder():
-    global water_count
-
-    # Mostrar la alerta
-    st.write(f"¡Es hora de hidratarse! Llevas {water_count} vasos de agua consumidos hoy.")
-
-    # Actualizar el contador de agua
-    water_count += 1
-
-    # Configurar el siguiente recordatorio
     set_reminders()
