@@ -21,6 +21,17 @@ def show_reminder():
     # Configurar el siguiente recordatorio
     set_reminders()
 
+# Función para configurar los recordatorios (definida fuera del bloque del botón)
+def set_reminders():
+    global current_time
+    global reminder_interval
+
+    # Obtener la hora del siguiente recordatorio
+    next_reminder = current_time + datetime.timedelta(minutes=reminder_interval)
+
+    # Iniciar un hilo para mostrar la alerta
+    threading.Timer(next_reminder - current_time, show_reminder).start()
+
 # Código para la interfaz de usuario de Streamlit
 
 st.title("Recordatorios de hidratación")
@@ -35,17 +46,6 @@ if st.button("Configurar recordatorios"):
 
     # Configurar los recordatorios
     set_reminders()
-
-# Definición de la función set_reminders
-def set_reminders():
-    global current_time
-    global reminder_interval
-
-    # Obtener la hora del siguiente recordatorio
-    next_reminder = current_time + datetime.timedelta(minutes=reminder_interval)
-
-    # Iniciar un hilo para mostrar la alerta
-    threading.Timer(next_reminder - current_time, show_reminder).start()
 
 # Contador de agua
 st.write("Vasos de agua consumidos hoy:", water_count)
