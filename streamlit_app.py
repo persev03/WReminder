@@ -1,37 +1,44 @@
 import streamlit as st
+import datetime
 import time
-from plyer import notification  # Necesitarás instalar plyer: pip install plyer
 
+# Inicializamos el contador de agua
+contador_agua = 0
+
+# Función para mostrar la alerta de hidratación
+def mostrar_alerta():
+    st.warning("¡Es hora de hidratarse!")
+
+# Función principal de la aplicación
 def main():
+    global contador_agua
+
     st.title("Recordatorio de Hidratación")
 
     # Configuración de recordatorio
-    reminder_interval = st.number_input("Configurar recordatorio cada (segundos):", min_value=1, value=1800)
+    hora_recordatorio = st.time_input("Selecciona la hora del recordatorio:", datetime.time(8, 0))
+    recordatorio_intervalo = st.slider("Intervalo de recordatorio (minutos):", 10, 120, 30)
 
-    # Contador de agua
-    glasses_consumed = st.number_input("Número de vasos de agua consumidos hoy:", min_value=0)
+    # Configuración del contador de agua
+    st.header("Contador de Agua")
+    contador_agua_hoy = st.empty()
 
-    # Botón para registrar consumo
-    if st.button("Registrar vaso de agua"):
-        glasses_consumed += 1
-
-    st.write(f"Vasos de agua consumidos hoy: {glasses_consumed}")
-
-    # Iniciar el temporizador de recordatorio
-    start_reminder(reminder_interval)
-
-def start_reminder(interval):
+    # Verificar si es hora de mostrar la alerta
     while True:
-        time.sleep(interval)
-        show_notification("Hidratación", "¡Es hora de tomar agua!")
+        now = datetime.datetime.now().time()
+        if now >= hora_recordatorio:
+            mostrar_alerta()
+            time.sleep(60 * recordatorio_intervalo)  # Esperar hasta el próximo recordatorio
+        else:
+            time.sleep(60)  # Esperar un minuto antes de verificar nuevamente
 
-def show_notification(title, message):
-    notification.notify(
-        title=title,
-        message=message,
-        app_icon=None,  # Puedes proporcionar el path a un icono personalizado
-        timeout=10,  # Tiempo en segundos para que la notificación desaparezca
-    )
+        # Actualizar el contador de agua (simulado con un botón)
+        if st.button("Registrar vaso de agua"):
+            contador_agua += 1
 
+        # Mostrar el contador actualizado
+        contador_agua_hoy.text(f"Vasos de agua hoy: {contador_agua}")
+
+# Ejecutar la aplicación
 if __name__ == "__main__":
     main()
