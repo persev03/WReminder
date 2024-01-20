@@ -26,4 +26,28 @@ class HydrationApp:
             st.success("Recordatorio iniciado. Puedes cerrar esta pestaña y revisar aquí.")
 
             tiempo_inicial = time.time()
-            tiempo_siguiente_recor
+            tiempo_siguiente_recordatorio = tiempo_inicial + self.intervalo * 3600
+
+            # Bucle de recordatorio
+            while True:
+                tiempo_actual = time.time()
+                self.tiempo_restante = max(0, int(tiempo_siguiente_recordatorio - tiempo_actual))
+
+                if self.tiempo_restante == 0:
+                    self.mostrar_recordatorio()
+                    tiempo_siguiente_recordatorio = tiempo_actual + self.intervalo * 3600
+
+                # Actualizar la interfaz
+                self.contador_text.text("Tiempo restante para el próximo recordatorio: {:02}:{:02}:{:02}".format(
+                    self.tiempo_restante // 3600, (self.tiempo_restante % 3600) // 60, self.tiempo_restante % 60))
+                time.sleep(1)
+
+        # Botón para registrar el consumo de agua
+        if st.button("Registrar Agua"):
+            self.registrar_agua()
+            st.success("Agua registrada. Total consumido: {} ml".format(self.agua_consumida))
+
+
+if __name__ == "__main__":
+    app = HydrationApp()
+    app.run()
