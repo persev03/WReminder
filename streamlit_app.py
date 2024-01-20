@@ -1,36 +1,37 @@
 import streamlit as st
 import time
-from datetime import datetime, timedelta
+from plyer import notification  # Necesitarás instalar plyer: pip install plyer
 
-# Inicializar variables
-hydration_interval = 5  # intervalo de hidratación en segundos
-start_time = datetime.now()
-water_count = 0
+def main():
+    st.title("Recordatorio de Hidratación")
 
-# Configuración de la aplicación
-st.title("Recordatorio de Hidratación")
+    # Configuración de recordatorio
+    reminder_interval = st.number_input("Configurar recordatorio cada (segundos):", min_value=1, value=1800)
 
-# Configuración del intervalo de hidratación
-hydration_interval = st.slider("Selecciona el intervalo de hidratación (segundos)", 3, 10, 3)
+    # Contador de agua
+    glasses_consumed = st.number_input("Número de vasos de agua consumidos hoy:", min_value=0)
 
-# Bucle principal de la aplicación
-while True:
-    current_time = datetime.now()
-    elapsed_time = current_time - start_time
+    # Botón para registrar consumo
+    if st.button("Registrar vaso de agua"):
+        glasses_consumed += 1
 
-    # Verificar si ha pasado el tiempo de hidratación
-    if elapsed_time.seconds % hydration_interval == 0:
-        st.info("¡Es hora de hidratarse!")
+    st.write(f"Vasos de agua consumidos hoy: {glasses_consumed}")
 
-    # Mostrar contador de agua
-    st.text(f"Vasos de agua consumidos hoy: {water_count}")
+    # Iniciar el temporizador de recordatorio
+    start_reminder(reminder_interval)
 
-    # Crear un botón único en cada iteración
-    register_button = st.button(f"Registrar vaso de agua ({elapsed_time.seconds})")
+def start_reminder(interval):
+    while True:
+        time.sleep(interval)
+        show_notification("Hidratación", "¡Es hora de tomar agua!")
 
-    # Verificar si se ha presionado el botón
-    if register_button:
-        water_count += 1
+def show_notification(title, message):
+    notification.notify(
+        title=title,
+        message=message,
+        app_icon=None,  # Puedes proporcionar el path a un icono personalizado
+        timeout=10,  # Tiempo en segundos para que la notificación desaparezca
+    )
 
-    # Actualizar la página cada segundo
-    time.sleep(1)
+if __name__ == "__main__":
+    main()
