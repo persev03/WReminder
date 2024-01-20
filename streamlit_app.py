@@ -31,4 +31,4 @@ class HydrationApp:
         # Botón para registrar el consumo de agua
         if st.button("Registrar Agua"):
             self.registrar_agua()
-            st.success("Agua registrada. Total consumido: {} ml".f
+            st.success("Agua registrada. T
