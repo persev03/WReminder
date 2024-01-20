@@ -8,6 +8,7 @@ class HydrationApp:
         self.agua_consumida = 0
         self.recordatorio_activado = False
         self.tiempo_siguiente_recordatorio = 0
+        self.contador_text = st.empty()
 
     def mostrar_recordatorio(self):
         st.success("¡Es hora de tomar agua!")
@@ -27,13 +28,13 @@ class HydrationApp:
             self.recordatorio_activado = True
             self.tiempo_siguiente_recordatorio = time.time() + self.intervalo * 3600
 
-        # Contador regresivo hasta el próximo recordatorio
+        # Actualizar la interfaz
         if self.recordatorio_activado:
             tiempo_restante = int(max(0, self.tiempo_siguiente_recordatorio - time.time()))
-            st.text("Tiempo restante para el próximo recordatorio: {:02}:{:02}:{:02}".format(
+            self.contador_text.text("Tiempo restante para el próximo recordatorio: {:02}:{:02}:{:02}".format(
                 tiempo_restante // 3600, (tiempo_restante % 3600) // 60, tiempo_restante % 60))
 
-            # Actualizar la interfaz
+            # Mostrar el mensaje de recordatorio cuando llegue el momento
             if tiempo_restante == 0:
                 self.mostrar_recordatorio()
                 self.tiempo_siguiente_recordatorio = time.time() + self.intervalo * 3600
