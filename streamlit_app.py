@@ -6,6 +6,7 @@ class HydrationApp:
     def __init__(self):
         self.intervalo = 0
         self.agua_consumida = 0
+        self.tiempo_restante = 0
 
     def mostrar_recordatorio(self):
         st.success("¡Es hora de tomar agua!")
@@ -23,10 +24,21 @@ class HydrationApp:
         if st.button("Iniciar Recordatorio"):
             st.success("Recordatorio iniciado. Puedes cerrar esta pestaña y revisar aquí.")
 
-            # Iniciar el bucle de recordatorio
+            tiempo_inicial = time.time()
+            tiempo_siguiente_recordatorio = tiempo_inicial + self.intervalo * 3600
+
+            # Bucle de recordatorio
             while True:
-                self.mostrar_recordatorio()
-                time.sleep(self.intervalo * 3600)  # Convertir el intervalo a segundos
+                tiempo_actual = time.time()
+                self.tiempo_restante = int(tiempo_siguiente_recordatorio - tiempo_actual)
+
+                if self.tiempo_restante <= 0:
+                    self.mostrar_recordatorio()
+                    tiempo_siguiente_recordatorio = tiempo_actual + self.intervalo * 3600
+
+                # Actualizar la interfaz
+                st.text("Tiempo restante para el próximo recordatorio: {} segundos".format(self.tiempo_restante))
+                time.sleep(1)
 
         # Botón para registrar el consumo de agua
         if st.button("Registrar Agua"):
